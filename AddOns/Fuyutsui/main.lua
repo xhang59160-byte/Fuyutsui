@@ -37,7 +37,6 @@ local function getPlayerInfo()
     local GUID = UnitGUID("player")
     local specIndex = C_SpecializationInfo.GetSpecialization()
     local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
-    print(specIndex, specID)
     -- 更新玩家信息
     state.name, state.GUID = name, GUID
     state.className, state.classFilename, state.classId = fu.className, fu.classFilename, fu.classId
@@ -50,7 +49,7 @@ local function getPlayerInfo()
     -- 更新函数
     if type(readKeybindings) == "function" then readKeybindings() end        -- 读取按键绑定
     if type(updateHeroTalent) == "function" then updateHeroTalent() end      -- 更新英雄天赋
-    if type(updateSpecInfo) == "function" then updateSpecInfo(specIndex) end -- 更新专精信息
+    if type(updateSpecInfo) == "function" then updateSpecInfo() end -- 更新专精信息
     if type(CreateClassMacro) == "function" then CreateClassMacro() end      -- 创建类宏
     -- 载入函数
     updateSpellSuccess = fu.updateSpellSuccess                               -- 更新法术成功
