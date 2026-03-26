@@ -830,3 +830,11 @@
   unit: 0
   技能: 真言术：障
   热键: ALT-CTRL-SHIFT-NUMPAD4
+209:
+  unit: 0
+  技能: 神圣赞美诗
+  热键: ALT-CTRL-SHIFT-NUMPAD5
+210:
+  unit: 0
+  技能: 光晕
+  热键: ALT-CTRL-SHIFT-NUMPAD6

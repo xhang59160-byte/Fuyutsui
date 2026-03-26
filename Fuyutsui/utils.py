@@ -147,6 +147,30 @@ def get_lowest_health_unit(state_dict, health_threshold=100):
     slot = str(lowest_unit) if lowest_unit is not None else None
     return (slot, lowest_pct) if lowest_unit is not None else (None, None)
 
+def get_count_units_below_health(state_dict, health_threshold=100):
+    """
+    在 group 中生命值低于 health_threshold 的单位数量。
+    仅考虑职责不等于 0 的单位。
+    返回一个整数 count。
+    """
+    group = state_dict.get("group") or {}
+    count = 0
+    for key, data in group.items():
+        if not isinstance(data, dict):
+            continue
+        if not _role_not_zero(data):
+            continue
+        pct = data.get("生命值")
+        if pct is None:
+            continue
+        try:
+            pct = int(pct)
+        except (TypeError, ValueError):
+            continue
+        if 0 < pct < health_threshold:
+            count += 1
+    return count
+
 
 def get_unit_with_role(state_dict, role, reverse=False):
     """
