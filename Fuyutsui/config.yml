@@ -717,7 +717,7 @@ state:
         step: 39
         type: "int"
       狂暴充能:
-        step: 40
+        step: 41
         type: "int"
   4:
     一键辅助:
