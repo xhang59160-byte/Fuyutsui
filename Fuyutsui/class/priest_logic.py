@@ -348,11 +348,11 @@ def run_priest_logic(state_dict, spec_name):
                         current_step = f"施放 圣言术：静 on {lowest_u}, 生命低于60%的单位"
                         action_hotkey = get_hotkey(int(lowest_u), "圣言术：静")
                     # 神圣化身
-                    elif apotheosis_cd == 0 and count80 >= 3 and serenity_cd > 5:
+                    elif combat and apotheosis_cd == 0 and count80 >= 3 and serenity_cd > 5:
                         current_step = "施放 神圣化身"
                         action_hotkey = get_hotkey(0, "神圣化身")
                     # 光晕
-                    elif count90 >= 3 and halo_cd == 0:
+                    elif combat and count90 >= 3 and halo_cd == 0:
                         current_step = "施放 光晕"
                         action_hotkey = get_hotkey(0, "光晕")
                     # 治疗祷言
