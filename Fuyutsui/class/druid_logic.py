@@ -16,39 +16,49 @@ from utils import (
 
 def run_druid_logic(state_dict, spec_name):
     spells = state_dict.get("spells") or {}
-    health_value = state_dict.get("生命值")
-    energy_value = state_dict.get("能量值")
-    assistant_value = state_dict.get("一键辅助")
-    target_valid = state_dict.get("目标有效")
+    生命值 = state_dict.get("生命值")
+    能量值 = state_dict.get("能量值")
+    一键 = state_dict.get("一键辅助")
+    目标有效 = state_dict.get("目标有效")
     combat = state_dict.get("战斗")
     casting = state_dict.get("施法")
     channeling = state_dict.get("引导")
-    group_type = state_dict.get("队伍类型", 0)
-    nature_cure_cd = spells.get("自然之愈", -1)
+    队伍类型 = state_dict.get("队伍类型", 0)
+    自然之愈cd = spells.get("自然之愈", -1)
 
     action_hotkey = None
     current_step = "无匹配技能"
     unit_info = {}
 
     if spec_name == "守护":
+        狂暴充能 = spells.get("狂暴充能")
+        狂暴回复 = spells.get("狂暴回复")
+        铁鬃 = state_dict.get("铁鬃")
+        节能施法 = state_dict.get("节能施法")
+        熊形态 = state_dict.get("姿态")
+        目标距离 = state_dict.get("目标距离")
+        队伍人数 = state_dict.get("队伍人数")
+        连击点 = state_dict.get("连击点")
+
+
         if channeling > 0:
             current_step = "在引导,不执行任何操作"
             return None, current_step, unit_info
 
-        if combat and target_valid:
+        if combat and 目标有效:
             if state_dict.get("姿态") != 5:
                 current_step = "施放 熊形态"
                 action_hotkey = get_hotkey(0, "熊形态")
-            elif health_value < 85 and energy_value > 10 and spells.get("狂暴充能") < 3:
+            elif 生命值 < 85 and 能量值 > 10 and 狂暴充能 < 3 and 狂暴回复 == 0:
                 current_step = "施放 狂暴充能"
                 action_hotkey = get_hotkey(0, "狂暴回复")
-            elif health_value < 60 and energy_value > 10 and spells.get("狂暴回复") < 1:
+            elif 生命值 < 60 and 能量值 > 10 and 狂暴回复 < 1:
                 current_step = "施放 狂暴回复"
                 action_hotkey = get_hotkey(0, "狂暴回复")
-            elif ((state_dict.get("铁鬃") < 2 and energy_value > 40) or energy_value > 80):
+            elif ((铁鬃 < 2 and 能量值 > 40) or 能量值 > 80):
                 current_step = "施放 铁鬃"
                 action_hotkey = get_hotkey(0, "铁鬃")
-            elif state_dict.get("节能施法") > 0 and spells.get("狂暴回复") > 15:
+            elif 节能施法 > 0 and 狂暴回复 > 15:
                 current_step = "施放 愈合"
                 action_hotkey = get_hotkey(1, "愈合")
             else:
@@ -62,7 +72,7 @@ def run_druid_logic(state_dict, spec_name):
                     7: ("裂伤", "裂伤"),
                     8: ("野性印记", "野性印记"),
                 }
-                tup = action_map.get(assistant_value)
+                tup = action_map.get(一键)
                 if tup:
                     current_step = f"施放 {tup[0]}"
                     action_hotkey = get_hotkey(0, tup[1])
@@ -110,13 +120,13 @@ def run_druid_logic(state_dict, spec_name):
 
         if channeling > 0:
             current_step = "在引导,不执行任何操作"
-        elif nature_cure_cd == 0 and dispel_unit_magic is not None and group_type == 46:
+        elif 自然之愈cd == 0 and dispel_unit_magic is not None and 队伍类型 == 46:
             current_step = f"施放 自然之愈 on {dispel_unit_magic}"
             action_hotkey = get_hotkey(int(dispel_unit_magic), "自然之愈")
-        elif nature_cure_cd == 0 and dispel_unit_curse is not None and group_type == 46:
+        elif 自然之愈cd == 0 and dispel_unit_curse is not None and 队伍类型 == 46:
             current_step = f"施放 自然之愈 on {dispel_unit_curse}"
             action_hotkey = get_hotkey(int(dispel_unit_curse), "自然之愈")
-        elif nature_cure_cd == 0 and dispel_unit_poison is not None and group_type == 46:
+        elif 自然之愈cd == 0 and dispel_unit_poison is not None and 队伍类型 == 46:
             current_step = f"施放 自然之愈 on {dispel_unit_poison}"
             action_hotkey = get_hotkey(int(dispel_unit_poison), "自然之愈")
         elif has_lifebloom_unit is not None and has_lifebloom_duration is not None and has_lifebloom_duration < 3:
@@ -128,7 +138,7 @@ def run_druid_logic(state_dict, spec_name):
         elif casting == 0 and 0 < state_dict.get("节能施法") < 5 and no_regrowth_lowest_unit is not None and no_regrowth_lowest_pct is not None and no_regrowth_lowest_pct < 90:
             current_step = f"施放 愈合 on {no_regrowth_lowest_unit}"
             action_hotkey = get_hotkey(int(no_regrowth_lowest_unit), "愈合")
-        elif spells.get("激活") == 0 and combat and state_dict.get("姿态") == 0 and energy_value < 80:
+        elif spells.get("激活") == 0 and combat and state_dict.get("姿态") == 0 and 能量值 < 80:
             current_step = "施放 激活"
             action_hotkey = get_hotkey(0, "激活")
         elif state_dict.get("丛林之魂") is not None and state_dict.get("丛林之魂") > 0 and no_rejuv_unit is not None and no_rejuv_pct is not None:
@@ -161,11 +171,11 @@ def run_druid_logic(state_dict, spec_name):
         elif casting == 0 and no_regrowth_lowest_unit is not None and no_regrowth_lowest_pct is not None and no_regrowth_lowest_pct < 70:
             current_step = f"施放 愈合 on {no_regrowth_lowest_unit}"
             action_hotkey = get_hotkey(int(no_regrowth_lowest_unit), "愈合")
-        elif assistant_value == 7:
+        elif 一键 == 7:
             current_step = "施放 野性印记"
             action_hotkey = get_hotkey(0, "野性印记")
-        elif combat and target_valid:
-            if assistant_value == 4:
+        elif combat and 目标有效:
+            if 一键 == 4:
                 current_step = "施放 斜掠"
                 action_hotkey = get_hotkey(0, "斜掠")
             elif state_dict.get("目标距离") <= 8:
@@ -182,17 +192,17 @@ def run_druid_logic(state_dict, spec_name):
                         3: ("撕碎", "撕碎"),
                         4: ("斜掠", "斜掠"),
                     }
-                    tup = action_map.get(assistant_value)
+                    tup = action_map.get(一键)
                     if tup:
                         current_step = f"施放 {tup[0]}"
                         action_hotkey = get_hotkey(0, tup[1])
                     else:
                         current_step = "战斗中-无匹配技能"
             elif state_dict.get("目标距离") > 8:
-                if assistant_value == 5:
+                if 一键 == 5:
                     current_step = "施放 月火术"
                     action_hotkey = get_hotkey(0, "月火术")
-                elif assistant_value == 6:
+                elif 一键 == 6:
                     current_step = "施放 愤怒"
                     action_hotkey = get_hotkey(0, "愤怒")
         else:
