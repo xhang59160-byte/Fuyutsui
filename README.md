@@ -37,11 +37,11 @@ Fuyutsui Tinkerer是由日本大众消费电子巨头 冬月电子（Fuyutsuki E
 下面按“游戏内 Lua 插件 + 桌面端 Python”两部分说明。该项目面向 Windows（会调用屏幕截图与 Windows API）。
 
 ### 1. 文件放在哪里
-**Lua 插件（WoW AddOn）**：把仓库里的 `AddOns/Fuyutsui` 这个文件夹整体复制到魔兽世界安装目录的 `Interface/AddOns/` 下面。
+**Lua 插件（WoW AddOn）**：把仓库里的 `Fuyutsui` 这个文件夹整体复制到魔兽世界安装目录的 `Interface/AddOns/` 下面。
 
 ### 2. 安装 VS Code
 1. 安装 VS Code（任意版本即可）。
-2. 打开 VS Code 后：`文件 -> 打开文件夹`，选择你的项目根目录（也就是包含 `README.md` 的那个目录）。
+2. 打开 VS Code 后：`文件 -> 打开文件夹`，选择项目根目录, 也就是`Interface/AddOns/Fuyutsui`。
 
 ### 3. 安装 Python
 1. 安装 Python 3.x（建议 3.10+）。
@@ -50,29 +50,19 @@ Fuyutsui Tinkerer是由日本大众消费电子巨头 冬月电子（Fuyutsuki E
    - `python --version`
 
 ### 4. 安装 Python 依赖
-在 `Fuyutsui/`（里面有 `requirements.txt` 的那个文件夹）中，按顺序复制执行下面 3 步：
-1. 先准备运行环境（只需要做一次）：
-   - `python -m venv .venv`
-2. 开启这个环境（PowerShell）：
-   - `.\.venv\Scripts\Activate.ps1`
-3. 安装程序需要的组件：
-   - `pip install -r requirements.txt`
-   - `pip install mss`
+这里需要AI帮助, 不会的可以将错误复制给AI
 
-看到安装成功（没有红色报错）就可以继续下一步。
+安装程序需要的组件：
+   - `pip install mss`
 
 ### 5. 运行（从游戏开始）
 1. 启动魔兽世界，进入游戏后在插件列表里启用 **`Fuyutsui`**。
 2. 确保游戏窗口标题与脚本默认匹配：
    - 桌面端默认用的窗口标题是 `魔兽世界`
-3. 在 `Fuyutsui/` 目录运行 GUI：
+3. 在 `Fuyutsui/Fuyutsui` 目录运行 GUI：
    - `python logic_gui.py`
 4. 使用说明：
    - 按 `XBUTTON2`（鼠标侧键，具体以你设备为准）可切换“逻辑开启/关闭”。
-
-### 6. 常见问题
-1. **扫描失败/找不到游戏窗口**：如果看到类似 “未找到游戏窗口或扫描失败”，说明 Python 没有匹配到游戏窗口标题。你需要在 `Fuyutsui/GetPixels.py` 的 `get_info(window_title="...")` 默认值，或在 `logic_gui.py` 里传入正确的标题字符串。
-2. **热键不生效**：检查 `Fuyutsui/config.yml` 里当前职业/专精对应的 `keymap` 字段是否指向 `Fuyutsui/keymap/` 下存在的文件；同时确认你的游戏动作条/宏与逻辑发送的热键一致。
 
 ## 免责声明
 
