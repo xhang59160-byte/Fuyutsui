@@ -11,7 +11,7 @@ local EvaluateColorFromBoolean = C_CurveUtil.EvaluateColorFromBoolean
 local rc = LibStub("LibRangeCheck-3.0")
 local creat = fu.updateOrCreatTextureByIndex
 
-local state, group, target, nameplate, group_list = {}, {}, {}, {}, {}
+local state, group, group_list, target, nameplate = {}, {}, {}, {}, {}
 local fixed, group_blocks, blocks = {}, nil, nil
 local failedSpell, failedSpellTimer, updateIndex = nil, nil, 1
 local updateSpecInfo, createClassMacro
@@ -46,7 +46,7 @@ local curve140 = fu.creatColorCurve(1, 140)
 local curve120 = fu.creatColorCurve(1, 120)
 local curve115 = fu.creatColorCurve(1, 115)
 local curve100 = fu.creatColorCurve(1, 100)
-local curve80 = fu.creatColorCurve(1, 80)
+local curve85 = fu.creatColorCurve(1, 85)
 local curve255 = fu.creatColorCurve(255, 255)
 local curve10 = fu.creatColorCurve(10, 100)
 
@@ -57,6 +57,7 @@ local helpfulSpells = {
     [1262763] = curve115, -- 祈福
     [82326] = curve140,   -- 圣光术
     [19750] = curve115,   -- 圣光闪现
+    [8936] = curve115,    -- 愈合
 }
 -- ================================================================
 --                          玩家信息
@@ -224,20 +225,20 @@ local function updatePlayerChannelingInfo()
 end
 
 local function updatePlayerCasting(spellId)
-    if blocks then
-        if blocks["施法目标"] then
-            if state.castTargetIndex then
-                creat(blocks["施法目标"], state.castTargetIndex / 255)
-            else
-                creat(blocks["施法目标"], 0)
-            end
+    if not blocks then return end
+    if blocks["施法目标"] then
+        if state.castTargetIndex then
+            creat(blocks["施法目标"], state.castTargetIndex / 255)
+        else
+            creat(blocks["施法目标"], 0)
         end
-        if blocks["施法技能"] then
-            if fu.castingSpellList[spellId] then
-                creat(blocks["施法技能"], fu.castingSpellList[spellId] / 255)
-            else
-                creat(blocks["施法技能"], 0)
-            end
+    end
+    if blocks["施法技能"] then
+        local castingSpell = fu.castingSpellList[spellId]
+        if castingSpell then
+            creat(blocks["施法技能"], castingSpell / 255)
+        else
+            creat(blocks["施法技能"], 0)
         end
     end
 end
@@ -256,9 +257,9 @@ local function updatePlayerPower(powerType)
         local _, _, b = state.powerPercent:GetRGB()
         creat(fixed["能量值"], b)
     end
-    if powerType == "COMBO_POINTS" and blocks and blocks.comboPoints then
+    if powerType == "COMBO_POINTS" and blocks and blocks["连击点"] then
         local power = UnitPower("player", 4)
-        creat(blocks.comboPoints, power / 255)
+        creat(blocks["连击点"], power / 255)
     end
     if powerType == "HOLY_POWER" and blocks and blocks.holyPower then
         local power = UnitPower("player", 9)
@@ -559,8 +560,8 @@ end
 -- 获取玩家形态
 local function updateShapeshiftForm()
     state.shapeshiftFormID = GetShapeshiftFormID()
-    if blocks and blocks.stance then
-        creat(blocks.stance, state.shapeshiftFormID and state.shapeshiftFormID / 255 or 0)
+    if blocks and blocks["姿态"] then
+        creat(blocks["姿态"], state.shapeshiftFormID and state.shapeshiftFormID / 255 or 0)
     end
 end
 
@@ -633,11 +634,11 @@ local function updateTargetRangeBlock()
         target.inRange = target.maxRange <= specRange
         updateTargetValid()
     end
-    if blocks and blocks.target_maxRange then
+    if blocks and blocks["目标距离"] then
         if target.maxRange then
-            creat(blocks.target_maxRange, target.maxRange / 255)
+            creat(blocks["目标距离"], target.maxRange / 255)
         else
-            creat(blocks.target_maxRange, 1)
+            creat(blocks["目标距离"], 1)
         end
     end
 end
@@ -768,7 +769,7 @@ end
 local function updateUnitCurve(unit)
     local obj = group[unit]
     if not obj then return end
-    obj.curve = curve80
+    obj.curve = curve85
     if obj.curveTimer then
         obj.curveTimer:Cancel()
     end
