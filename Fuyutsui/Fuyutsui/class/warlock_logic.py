@@ -2,13 +2,13 @@
 """术士职业的基础逻辑（未实现）。"""
 from utils import *
 action_map = {
-    1: ("古尔丹之手", "古尔丹之手"),
-    2: ("召唤恐惧猎犬", "召唤恐惧猎犬"),
-    3: ("召唤恶魔卫士", "召唤恶魔卫士"),
-    4: ("恶魔之箭", "恶魔之箭"),
-    5: ("暗影箭", "暗影箭"),
-    10: ("陨灭", "古尔丹之手"),
-    11: ("狱火箭", "暗影箭"),
+    8: ("古尔丹之手", "古尔丹之手"),
+    9: ("召唤恐惧猎犬", "召唤恐惧猎犬"),
+    10: ("召唤恶魔卫士", "召唤恶魔卫士"),
+    11: ("恶魔之箭", "恶魔之箭"),
+    12: ("暗影箭", "暗影箭"),
+    17: ("陨灭", "古尔丹之手"),
+    18: ("狱火箭", "暗影箭"),
 }
 
 failed_spell_map = {
@@ -78,13 +78,13 @@ def run_warlock_logic(state_dict, spec_name):
             elif 小鬼数量 >= 6 and 内爆 == 0:
                 current_step = "施放 内爆"
                 action_hotkey = get_hotkey(0, "内爆")
-            elif 施法技能 == 18 and 灵魂碎片 == 5:
+            elif 施法技能 == 10 and 灵魂碎片 == 5:
                 current_step = "施放 古尔丹之手"
                 action_hotkey = get_hotkey(0, "古尔丹之手")
-            elif 施法技能 == 18 and 灵魂碎片 < 5:
+            elif 施法技能 == 10 and 灵魂碎片 < 5:
                 current_step = "施放 暗影箭"
                 action_hotkey = get_hotkey(0, "暗影箭")
-            elif 一键辅助 == 3 and 邪能统御 == 0:
+            elif 一键辅助 == 10 and 邪能统御 == 0:
                 current_step = "施放 邪能统御"
                 action_hotkey = get_hotkey(0, "邪能统御")
             elif tup:
