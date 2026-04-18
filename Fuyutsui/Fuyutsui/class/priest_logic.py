@@ -57,7 +57,7 @@ def _priest_discipline_logic(state_dict):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型", 0)
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -146,7 +146,7 @@ def _priest_discipline_logic(state_dict):
             if 纯净术 == 0 and 驱散单位 is not None:
                 current_step = f"施放 纯净术 on {驱散单位}"
                 action_hotkey = get_hotkey(int(驱散单位), "纯净术")
-            elif 目标有效 and 战斗 and 一键辅助 == 14:
+            elif 1 <= 目标类型 <= 3 and 战斗 and 一键辅助 == 14:
                 current_step = "施放 暗言术：痛"
                 action_hotkey = get_hotkey(0, "暗言术：痛")
             elif 无救赎90数量 >= 5 and 耀 == 0 and 福音层数 > 0:
@@ -183,7 +183,7 @@ def _priest_discipline_logic(state_dict):
             elif 苦修 == 0 and 最低单位 is not None and 最低生命值 is not None and 最低生命值 < 75:
                 current_step = f"施放 苦修 on {最低单位}, 生命最低的单位"
                 action_hotkey = get_hotkey(int(最低单位), "苦修")
-            elif 目标有效 and 战斗:
+            elif 1 <= 目标类型 <= 3 and 战斗:
                 if 灭 == 0 and 有救赎数量 > 0:
                     current_step = "施放 暗言术：灭"
                     action_hotkey = get_hotkey(0, "暗言术：灭")
@@ -202,7 +202,7 @@ def _priest_discipline_logic(state_dict):
             if 纯净术 == 0 and 驱散单位 is not None:
                 current_step = f"施放 纯净术 on {驱散单位}"
                 action_hotkey = get_hotkey(int(驱散单位), "纯净术")
-            elif 目标有效 and 战斗 and 一键辅助 == 14:
+            elif 1 <= 目标类型 <= 3 and 战斗 and 一键辅助 == 14:
                 current_step = "施放 暗言术：痛"
                 action_hotkey = get_hotkey(0, "暗言术：痛")
             elif 无救赎90数量 >= 2 and 耀 == 0 and 福音层数 > 0:
@@ -239,7 +239,7 @@ def _priest_discipline_logic(state_dict):
             elif 苦修 == 0 and 最低单位 is not None and 最低生命值 is not None and 最低生命值 < 75:
                 current_step = f"施放 苦修 on {最低单位}, 生命最低的单位"
                 action_hotkey = get_hotkey(int(最低单位), "苦修")
-            elif 目标有效 and 战斗:
+            elif 1 <= 目标类型 <= 3 and 战斗:
                 if 灭 == 0 and 有救赎数量 > 0:
                     current_step = "施放 暗言术：灭"
                     action_hotkey = get_hotkey(0, "暗言术：灭")
@@ -257,10 +257,10 @@ def _priest_discipline_logic(state_dict):
 
     elif 英雄天赋 == 2:
         if 战斗:
-            if 目标有效 and 一键辅助 == 14:
+            if 目标类型 and 一键辅助 == 14:
                 current_step = "施放 暗言术：痛"
                 action_hotkey = get_hotkey(0, "暗言术：痛")
-            elif 目标有效 and 熵能裂隙 > 0 and 苦修 == 0:
+            elif 1 <= 目标类型 <= 3 and 熵能裂隙 > 0 and 苦修 == 0:
                 current_step = "施放 苦修"
                 action_hotkey = get_hotkey(0, "苦修")
             elif 盾 == 0  and 无救赎最低 is not None and 无救赎生命值 < 99:
@@ -281,16 +281,16 @@ def _priest_discipline_logic(state_dict):
             elif not 移动 and 心灵震爆 == 0:
                 current_step = "施放 心灵震爆"
                 action_hotkey = get_hotkey(0, "心灵震爆")
-            elif not 移动 and 目标有效 and 熵能裂隙 > 0:
+            elif not 移动 and 1 <= 目标类型 <= 3 and 熵能裂隙 > 0:
                 current_step = "施放 惩击"
                 action_hotkey = get_hotkey(0, "惩击")
             elif 盾 == 0 and 无救赎最低 is not None and 无救赎生命值 < 90:
                 current_step = f"施放 真言术：盾 on {无救赎最低}, 无救赎生命最低的单位"
                 action_hotkey = get_hotkey(int(无救赎最低), "真言术：盾")   
-            elif 目标有效 and 苦修 == 0 and 虚空之盾 == 0:
+            elif 1 <= 目标类型 <= 3 and 苦修 == 0 and 虚空之盾 == 0:
                 current_step = "施放 苦修"
                 action_hotkey = get_hotkey(0, "苦修")
-            elif 目标有效:
+            elif 1 <= 目标类型 <= 3:
                 current_step = "施放 惩击"
                 action_hotkey = get_hotkey(0, "惩击")
 
@@ -311,7 +311,7 @@ def _priest_holy_logic(state_dict):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -330,7 +330,7 @@ def _priest_holy_logic(state_dict):
     静_cd = spells.get("圣言术：静", -1)
     静_charge = spells.get("静充能", -1)
     罚_cd = spells.get("圣言术：罚", -1)
-    纯净术_cd = spells.get("纯净术", -1)
+    纯净术 = spells.get("纯净术", -1)
     绝望祷言_cd = spells.get("绝望祷言", -1)
     神圣化身_cd = spells.get("神圣化身", -1)
     光晕_cd = spells.get("光晕", -1)
@@ -414,9 +414,12 @@ def _priest_holy_logic(state_dict):
     elif 英雄天赋 == 3:
         if 队伍类型 <= 40:
             # 驱散
-            if 纯净术_cd == 0 and dispel_magic_unit is not None and (首领战 in need_dispel_bosses):
-                current_step = f"施放 纯净术 on {dispel_magic_unit}"
-                action_hotkey = get_hotkey(int(dispel_magic_unit), "纯净术")
+            if 纯净术 == 0 and 驱散单位 is not None:
+                current_step = f"施放 纯净术 on {驱散单位}"
+                action_hotkey = get_hotkey(int(驱散单位), "纯净术")
+            elif 目标类型 == 12:
+                current_step = f"施放 纯净术 on 目标"
+                action_hotkey = get_hotkey(0, "纯净术")
             # 愈合祷言
             elif 愈合祷言_cd == 0:
                 _mending_filler()
@@ -451,19 +454,19 @@ def _priest_holy_logic(state_dict):
                     current_step = f"施放 快速治疗 on {lowest_u}, 生命最低的单位"
                     action_hotkey = get_hotkey(int(lowest_u), "快速治疗")
                 else:
-                    if 目标有效 and 战斗:
+                    if 目标类型 and 战斗:
                         _combat_filler()
-            elif 目标有效 and 战斗:
+            elif 1 <= 目标类型 <= 3 and 战斗:
                 _combat_filler()
 
         elif 队伍类型 == 46: 
             # 纯净术
-            if 纯净术_cd == 0 and dispel_magic_unit is not None and (首领战 not in no_dispel_bosses):
-                current_step = f"施放 纯净术 on {dispel_magic_unit}"
-                action_hotkey = get_hotkey(int(dispel_magic_unit), "纯净术")
-            elif 纯净术_cd == 0 and dispel_unit_disease is not None:
-                current_step = f"施放 纯净术 on {dispel_unit_disease}"
-                action_hotkey = get_hotkey(int(dispel_unit_disease), "纯净术")
+            if 纯净术 == 0 and 驱散单位 is not None:
+                current_step = f"施放 纯净术 on {驱散单位}"
+                action_hotkey = get_hotkey(int(驱散单位), "纯净术")
+            elif 目标类型 == 12:
+                current_step = f"施放 纯净术 on 目标"
+                action_hotkey = get_hotkey(0, "纯净术")
             # 愈合祷言
             elif 愈合祷言_cd == 0:
                 _mending_filler()
@@ -504,7 +507,7 @@ def _priest_holy_logic(state_dict):
                     current_step = f"施放 快速治疗 on {lowest_u}, 生命最低的单位"
                     action_hotkey = get_hotkey(int(lowest_u), "快速治疗")
                 
-            elif 目标有效 and 战斗:
+            elif 1 <= 目标类型 <= 3 and 战斗:
                 _combat_filler()
 
     return action_hotkey, current_step, unit_info
@@ -520,7 +523,7 @@ def _priest_shadow_logic(state_dict):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -535,14 +538,15 @@ def _priest_shadow_logic(state_dict):
     触须猛击 = spells.get("触须猛击", -1)
     吸血鬼的拥抱 = spells.get("吸血鬼的拥抱", -1)
     光晕 = spells.get("光晕", -1)
-
+    虚空齐射 = spells.get("虚空齐射", -1)
+    
     失败法术 = _get_failed_spell(state_dict)
 
     action_hotkey = None
     current_step = "无匹配技能"
     unit_info = {}
     if 引导 > 0:
-        if 战斗 and 目标有效 and 一键辅助 !=22:
+        if 战斗 and 1 <= 目标类型 <= 3 and 一键辅助 !=22:
             tup = action_map.get(一键辅助)
             if tup:
                 current_step = f"施放 {tup[0]}"
@@ -558,13 +562,13 @@ def _priest_shadow_logic(state_dict):
     elif 一键辅助 == 20:
         current_step = "施放 暗影形态"
         action_hotkey = get_hotkey(0, "暗影形态")
-    elif 目标有效 and  虚空形态 == 0 and 法术失败 == 8:
+    elif 1 <= 目标类型 <= 3 and  虚空形态 == 0 and 法术失败 == 8:
         current_step = "施放 虚空形态"
         action_hotkey = get_hotkey(0, "虚空形态")
     elif 法术失败 != 0 and 失败法术 is not None:
         current_step = f"施放 {失败法术}"
         action_hotkey = get_hotkey(0, 失败法术)
-    elif 战斗 and 目标有效:
+    elif 战斗 and 1 <= 目标类型 <= 3:
         tup = action_map.get(一键辅助)
         if tup:
             current_step = f"施放 {tup[0]}"

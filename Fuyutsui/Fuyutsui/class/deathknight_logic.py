@@ -67,7 +67,7 @@ def run_deathknight_logic(state_dict, spec_name):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = int(state_dict.get("目标类型", 0) or 0)
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -90,8 +90,7 @@ def run_deathknight_logic(state_dict, spec_name):
     elif spec_name == "鲜血":
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-        elif 战斗 and 目标有效:
-            
+        elif 战斗 and 1 <= 目标类型 <= 3:
             tup = action_map.get(一键辅助)
             if tup:
                 current_step = f"施放 {tup[0]}"
@@ -104,7 +103,7 @@ def run_deathknight_logic(state_dict, spec_name):
     elif spec_name == "冰霜":
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             
             tup = action_map.get(一键辅助)
             if tup:
@@ -138,7 +137,7 @@ def run_deathknight_logic(state_dict, spec_name):
         elif 一键辅助 == 13:
                 current_step = "施放 亡者复生"
                 action_hotkey = get_hotkey(0, "亡者复生")
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if 亡者大军 > 0 and tup:
                 current_step = f"施放 {tup[0]}"
                 action_hotkey = get_hotkey(0, tup[1])
@@ -163,7 +162,7 @@ def run_deathknight_logic(state_dict, spec_name):
             elif 腐化 == 0 and 黑暗突变 > 15 and (灵魂收割 == 255 or 目标生命值 > 35):
                 current_step = "施放 腐化充能"
                 action_hotkey = get_hotkey(0, "腐化")
-            elif 脓疮毒镰 > 0:
+            elif 脓疮毒镰 > 0 and 食尸鬼层数 <= 5:
                 current_step = "施放 脓疮毒镰"
                 action_hotkey = get_hotkey(0, "脓疮打击")
             elif ((末日突降 == 1 and 能量值 >= 15) or 能量值 >= 80) and 敌人人数 >= 3:

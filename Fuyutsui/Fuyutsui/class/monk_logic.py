@@ -58,7 +58,7 @@ def run_monk_logic(state_dict, spec_name):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -144,7 +144,7 @@ def run_monk_logic(state_dict, spec_name):
 
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             current_step, action_hotkey = _combat_logic()
         else:
             current_step = "非战斗状态,不执行任何操作"
@@ -269,15 +269,15 @@ def run_monk_logic(state_dict, spec_name):
                 current_step = "施放 法力茶"
                 action_hotkey = get_hotkey(0, "法力茶")
             # 雷光聚神茶
-            elif 目标有效 and 旭日东升踢 == 0 and 雷光茶 == 0:
+            elif 1 <= 目标类型 <= 3 and 旭日东升踢 == 0 and 雷光茶 == 0:
                 current_step = "施放 雷光聚神茶"
                 action_hotkey = get_hotkey(0, "雷光聚神茶")
             # 旭日东升踢
-            elif 目标有效 and 旭日东升踢 == 0:
+            elif 1 <= 目标类型 <= 3 and 旭日东升踢 == 0:
                 current_step = "施放 旭日东升踢"
                 action_hotkey = get_hotkey(0, "旭日东升踢")
             # 天神御身
-            elif 目标有效 and count80 >= 3 and 天神御身 == 0:
+            elif 1 <= 目标类型 <= 3 and count80 >= 3 and 天神御身 == 0:
                 current_step = "施放 天神御身"
                 action_hotkey = get_hotkey(0, "天神御身")
             # 复苏之雾
@@ -289,15 +289,15 @@ def run_monk_logic(state_dict, spec_name):
                 current_step = f"施放 氤氲之雾 on {无氤氲单位}"
                 action_hotkey = get_hotkey(int(无氤氲单位), "氤氲之雾")
             # 神鹤引项踢
-            elif 目标有效 and 敌人人数 >= 5:
+            elif 1 <= 目标类型 <= 3 and 敌人人数 >= 5:
                 current_step = "施放 神鹤引项踢"
                 action_hotkey = get_hotkey(0, "神鹤引项踢")
             # 幻灭踢
-            elif 目标有效 and 幻灭踢 == 0:
+            elif 1 <= 目标类型 <= 3 and 幻灭踢 == 0:
                 current_step = "施放 幻灭踢"
                 action_hotkey = get_hotkey(0, "幻灭踢")
             # 猛虎掌
-            elif 目标有效:
+            elif 1 <= 目标类型 <= 3:
                 current_step = "施放 猛虎掌"
                 action_hotkey = get_hotkey(0, "猛虎掌")
             else:
@@ -310,7 +310,7 @@ def run_monk_logic(state_dict, spec_name):
 
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-        elif 战斗 and 目标有效 and tup:
+        elif 战斗 and 1 <= 目标类型 <= 3 and tup:
             current_step = f"施放 {tup[0]}"
             action_hotkey = get_hotkey(0, tup[1])
         else:

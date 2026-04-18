@@ -149,6 +149,7 @@ function fu.updateSpecInfo()
         fu.spellCooldown[1227280] = { index = 40, name = "触须猛击" }
         fu.spellCooldown[15286] = { index = 41, name = "吸血鬼的拥抱" }
         fu.spellCooldown[120644] = { index = 42, name = "光晕" }
+        fu.spellCooldown[1242173] = { index = 43, name = "虚空齐射", forcedKnown = true }
     end
 end
 
@@ -185,6 +186,11 @@ function fu.CreateClassMacro()
         [28] = "[@cursor]真言术：障",
         [29] = "神圣赞美诗",
         [30] = "光晕",
+        [31] = "纯净术",
+        [32] = "快速治疗",
+        [33] = "真言术：盾",
+        [34] = "愈合祷言",
+        [35] = "圣言术：静",
     }
 
     fu.CreateMacro(dynamicSpells, staticSpells)

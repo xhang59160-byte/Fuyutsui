@@ -838,3 +838,23 @@
   unit: 0
   技能: 光晕
   热键: ALT-CTRL-SHIFT-NUMPAD6
+211:
+  unit: 0
+  技能: 纯净术
+  热键: ALT-CTRL-SHIFT-NUMPAD7
+212:
+  unit: 0
+  技能: 快速治疗
+  热键: ALT-CTRL-SHIFT-NUMPAD8
+213:
+  unit: 0
+  技能: 真言术：盾
+  热键: ALT-CTRL-SHIFT-NUMPAD9
+214:
+  unit: 0
+  技能: 愈合祷言
+  热键: ALT-CTRL-SHIFT-NUMPAD0
+215:
+  unit: 0
+  技能: 圣言术：静
+  热键: ALT-CTRL-SHIFT-NUMPADDECIMAL

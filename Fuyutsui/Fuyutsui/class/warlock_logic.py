@@ -39,7 +39,7 @@ def run_warlock_logic(state_dict, spec_name):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -71,7 +71,7 @@ def run_warlock_logic(state_dict, spec_name):
         if 法术失败 != 0 and 失败法术 is not None:
             current_step = f"施放 {失败法术}"
             action_hotkey = get_hotkey(0, 失败法术)
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if 魔典邪能破坏者 == 0 and 法术封锁 == 1:
                 current_step = "施放 魔典：邪能破坏者"
                 action_hotkey = get_hotkey(0, "魔典：邪能破坏者")

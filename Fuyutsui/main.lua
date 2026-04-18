@@ -17,6 +17,7 @@ local failedSpell, failedSpellId, failedSpellTimer, updateIndex = nil, nil, nil,
 local updateSpecInfo, createClassMacro
 local roleMap, enumPowerType, spellsList = fu.roleMap, fu.EnumPowerType, fu.spellsList
 local fallbackColor = CreateColor(0, 0, 1)
+local specRange = 40
 
 fixed["锚点"] = 1
 fixed["职业"] = 2
@@ -41,6 +42,7 @@ fixed["英雄天赋"] = 18
 --                          创建颜色曲线
 -- ================================================================
 local curveCache = {}
+
 
 local function creatColorCurveScaling(b)
     if curveCache[b] then
@@ -77,7 +79,41 @@ local helpfulSpells = {
 }
 
 local dispelCurve = C_CurveUtil.CreateColorCurve()
+target.enemyCurve = C_CurveUtil.CreateColorCurve()
+target.friendCurve = C_CurveUtil.CreateColorCurve()
+
 dispelCurve:SetType(Enum.LuaCurveType.Step)
+target.enemyCurve:SetType(Enum.LuaCurveType.Step)
+target.friendCurve:SetType(Enum.LuaCurveType.Step)
+
+-- test
+local testColorCurve = C_CurveUtil.CreateColorCurve()
+testColorCurve:SetType(Enum.LuaCurveType.Step)
+for i = 0, 11 do
+    testColorCurve:AddPoint(i, CreateColor(0, 1, i / 255, 1))
+end
+
+local function testcurve()
+    local unit = "target"
+    if not UnitExists(unit) then return end
+    local auraInstanceIDs = C_UnitAuras.GetUnitAuraInstanceIDs(unit, "HELPFUL", 1, 4)
+    if auraInstanceIDs and #auraInstanceIDs > 0 then
+        local color = C_UnitAuras.GetAuraDispelTypeColor(unit, auraInstanceIDs[1], testColorCurve)
+        -- print(color.b)
+    end
+end
+
+
+-- ================================================================
+--                          通用函数
+-- ================================================================
+
+-- 更新单位距离
+local function updateUnitRange(unit)
+    local minRange, maxRange = rc:GetRange(unit)
+    return minRange, maxRange
+end
+
 -- ================================================================
 --                          玩家信息
 -- ================================================================
@@ -94,6 +130,7 @@ local function getPlayerInfo()
     state.name, state.GUID = name, GUID
     state.className, state.classFilename, state.classId = fu.className, fu.classFilename, fu.classId
     state.specIndex, state.specID, state.specRole = specIndex, specID, role
+    specRange = fu.rangeSpecID[state.specID]
     -- 载入函数
     updateSpecInfo = fu.updateSpecInfo                                  -- 更新专精信息
     createClassMacro = fu.CreateClassMacro                              -- 创建类宏
@@ -114,10 +151,17 @@ end
 
 -- 各法术的驱散能力映射
 local dispelAbilities = {
-    [1] = { 527, 360823, 4987, 115450, 88423 },                    -- 魔法驱散
-    [2] = { 383016, 51886, 392378, 2782, 475 },                    -- 诅咒驱散
-    [3] = { 390632, 213634, 393024, 213644, 388874, 218164 },      -- 疾病驱散
-    [4] = { 392378, 2782, 393024, 213644, 388874, 218164, 365585 } -- 中毒驱散
+    [1] = { 527, 360823, 4987, 115450, 88423 },                     -- 魔法驱散
+    [2] = { 383016, 51886, 392378, 2782, 475 },                     -- 诅咒驱散
+    [3] = { 390632, 213634, 393024, 213644, 388874, 218164 },       -- 疾病驱散
+    [4] = { 392378, 2782, 393024, 213644, 388874, 218164, 365585 }, -- 中毒驱散
+    [11] = {}                                                       -- 流血驱散
+}
+
+-- 各法术的进攻驱散能力映射
+local offensiveDispelAbilities = {
+    [1] = { 528 },  -- 魔法
+    [9] = { 2908 }, -- 激怒
 }
 
 -- 检查玩家是否学习了多个法术中的任意一个
@@ -129,31 +173,43 @@ local function hasLearnedAnySpell(spellIDs)
     end
     return false
 end
--- 更新法术已知状态
-local function updateSpellKnown()
-    -- 动态生成驱散能力
-    local dispelCapabilities = {
-        [1] = false, -- 魔法驱散
-        [2] = false, -- 疾病驱散
-        [3] = false, -- 诅咒驱散
-        [4] = false, -- 中毒驱散
-    }
 
+local function updateCooldownSpellKnown()
+    local count = 1
     spells = {}
-
     if fu.spellCooldown then
         for spellID, info in pairs(fu.spellCooldown) do
             local isKnown = IsSpellKnown(spellID)
             local index = info.index
-            if isKnown then
+            if isKnown or info.forcedKnown then
                 -- print("加入法术:", info.name, index)
                 spells[spellID] = info
             else
-                -- print("未加入法术:", info.name, index)
+                -- print("未加入法术:", count, info.name, index)
+                count = count + 1
                 creat(index, 1)
             end
         end
     end
+end
+
+-- 更新法术已知状态
+local function updateSpellKnown()
+    updateCooldownSpellKnown()
+
+    -- 动态生成防御驱散能力
+    local dispelCapabilities = {
+        [1] = false,  -- 魔法驱散
+        [2] = false,  -- 疾病驱散
+        [3] = false,  -- 诅咒驱散
+        [4] = false,  -- 中毒驱散
+        [11] = false, -- 流血
+    }
+    -- 动态生成进攻驱散能力
+    local offensiveDispelCapabilities = {
+        [1] = false, -- 魔法
+        [9] = false, -- 激怒
+    }
 
     if fu.heroSpell then
         local index = 0
@@ -168,12 +224,34 @@ local function updateSpellKnown()
     for debuffType, spellIDs in pairs(dispelAbilities) do
         dispelCapabilities[debuffType] = hasLearnedAnySpell(spellIDs)
     end
+
+    for debuffType, spellIDs in pairs(offensiveDispelAbilities) do
+        offensiveDispelCapabilities[debuffType] = hasLearnedAnySpell(spellIDs)
+    end
+
     dispelCurve:ClearPoints()
-    for i = 1, 4 do
-        if dispelCapabilities[i] then
+    target.enemyCurve:ClearPoints()
+    target.friendCurve:ClearPoints()
+
+    for i, v in pairs(dispelCapabilities) do
+        if v then
             dispelCurve:AddPoint(i, CreateColor(0, 1, i / 255, 1))
+            target.friendCurve:AddPoint(i, CreateColor(0, 1, (i + 11) / 255, 1))
         else
             dispelCurve:AddPoint(i, CreateColor(0, 0, 0, 1))
+            target.friendCurve:AddPoint(i, CreateColor(0, 0, 11 / 255, 1))
+        end
+    end
+
+    for i, v in pairs(offensiveDispelCapabilities) do
+        if v then
+            if i == 9 then
+                target.enemyCurve:AddPoint(9, CreateColor(0, 1, 3 / 255, 1))
+            else
+                target.enemyCurve:AddPoint(i, CreateColor(0, 1, (i + 1) / 255, 1))
+            end
+        else
+            target.enemyCurve:AddPoint(i, CreateColor(0, 0, 1 / 255, 1))
         end
     end
 end
@@ -645,34 +723,66 @@ end
 --                          目标信息
 -- ================================================================
 --[[
-1 = "敌方",
-2 = "有增益的敌方"
-11 = "友方",
-12 = "有增益的友方"
-13 = "有可驱散减益的友方"
+    0 = "没有目标"
+
+    1 = "敌方",
+    2 = "敌方 有魔法 增益 "
+    3 = "敌方 有激怒 增益",
+
+    11 = "友方"
+    12 = "友方 有魔法 减益"
+    13 = "友方 有疾病 减益"
+    14 = "友方 有诅咒 减益"
+    15 = "友方 有中毒 减益"
+
 ]]
--- 更新目标是否有效
+
+local function getTargetDispelType()
+    local unit = "target"
+    if not UnitExists(unit) then return 0 end
+    local filter, curve, b = nil, nil, 0
+
+    if target.canAttack then
+        b = 1 / 255
+        curve = target.enemyCurve
+        filter = "HELPFUL|RAID_PLAYER_DISPELLABLE"
+    elseif target.canAssist then
+        b = 11 / 255
+        curve = target.friendCurve
+        filter = "HARMFUL|RAID_PLAYER_DISPELLABLE"
+    else
+        return 0
+    end
+
+    local auraInstanceIDs = C_UnitAuras.GetUnitAuraInstanceIDs(unit, filter, 1, 4)
+
+    if auraInstanceIDs and #auraInstanceIDs > 0 then
+        local color = C_UnitAuras.GetAuraDispelTypeColor(unit, auraInstanceIDs[1], curve)
+        return color.b
+    end
+    return b
+end
+
+-- 更新目标类型
 local function updateTargetValid()
-    target.valid = target.canAttack and target.inRange and not target.isDead
-    creat(fixed["目标类型"], target.valid and 1 / 255 or 0)
+    local targetType = 0
+
+    if target.inRange and not target.isDead then
+        targetType = getTargetDispelType()
+    end
+
+    creat(fixed["目标类型"], targetType)
 end
 
 -- 更新目标是否可以攻击
-local function updateTargetCanAttack()
+local function updateTargetType()
     target.canAttack = UnitCanAttack("player", "target")
     target.canAssist = UnitCanAssist("player", "target")
     updateTargetValid()
 end
 
--- 更新目标距离
-local function updateTargetRange()
-    local minRange, maxRange = rc:GetRange("target")
-    return minRange, maxRange
-end
-
 local function updateTargetRangeBlock()
-    local minRange, maxRange = updateTargetRange()
-    local specRange = fu.rangeSpecID[state.specID]
+    local minRange, maxRange = updateUnitRange("target")
     target.maxRange = maxRange
     if target.maxRange and specRange then
         target.inRange = target.maxRange <= specRange
@@ -704,26 +814,43 @@ end
 
 -- 更新目标完整信息
 local function updateTargetFullInfo()
-    updateTargetCanAttack()
+    updateTargetType()
     updateTargetDeath()
     updateTargetHealth()
+    getTargetDispelType()
 end
 
 -- ================================================================
 --                          姓名版信息
 -- ================================================================
 
+local function addNameplate(unit)
+    local minRange, maxRange = updateUnitRange(unit)
+    nameplate[unit] = {
+        name = GetUnitName(unit, true),
+        GUID = UnitGUID(unit),
+        canAttack = UnitCanAttack("player", unit),
+        canAssist = UnitCanAssist("player", unit),
+        minRange = minRange,
+        maxRange = maxRange,
+        affectingCombat = UnitAffectingCombat(unit),
+    }
+end
+
 -- 更新范围内敌方姓名版数量
-local function updateNameplateCount()
-    if blocks and blocks["敌人人数"] and fu.HarmfulSpellId then
-        nameplate.count = 0
-        for i = 1, 8 do
-            local unit = "nameplate" .. i
-            if UnitExists(unit) and UnitCanAttack("player", unit) and IsSpellInRange(fu.HarmfulSpellId, unit) then
-                nameplate.count = nameplate.count + 1
-            end
+local function updateEnemyCount()
+    local count = 0
+    for unit, data in pairs(nameplate) do
+        local minRange, maxRange = updateUnitRange(unit)
+        data.minRange = minRange
+        data.maxRange = maxRange
+        data.affectingCombat = UnitAffectingCombat(unit)
+        if data.canAttack and data.maxRange and data.maxRange <= specRange and data.affectingCombat then
+            count = count + 1
         end
-        creat(blocks["敌人人数"], nameplate.count / 255)
+    end
+    if blocks and blocks["敌人人数"] then
+        creat(blocks["敌人人数"], count / 255)
     end
 end
 
@@ -1128,12 +1255,12 @@ end
 frame:RegisterEvent("PLAYER_REGEN_DISABLED") -- 进入战斗
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- 离开战斗
 function frame:PLAYER_REGEN_DISABLED()
-    updateTargetCanAttack()
+    updateTargetType()
     updatePlayerCombat()
 end
 
 function frame:PLAYER_REGEN_ENABLED()
-    updateTargetCanAttack()
+    updateTargetType()
     updatePlayerCombat()
 end
 
@@ -1201,6 +1328,7 @@ function frame:UNIT_SPELLCAST_CHANNEL_STOP(unitTarget, castGUID, spellID, castBa
     -- updateTeaCount2(spellID)
 end
 
+local updateLesserGhoul = false
 frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 function frame:UNIT_SPELLCAST_SUCCEEDED(unitTarget, castGUID, spellID, castBarID)
     if not issecretvalue(spellID) then
@@ -1210,6 +1338,12 @@ function frame:UNIT_SPELLCAST_SUCCEEDED(unitTarget, castGUID, spellID, castBarID
         if spellID == 384255 or spellID == 200749 then
             print("切换天赋")
             C_Timer.After(1, function() updateSpellKnown() end)
+        end
+        if spellID == 55090 or spellID == 433895 then
+            updateLesserGhoul = true
+            C_Timer.After(0.3, function()
+                updateLesserGhoul = false
+            end)
         end
     end
 end
@@ -1331,6 +1465,10 @@ function frame:SPELL_UPDATE_USES(spellID, baseSpellID)
         fu.updateUsesSpell = nil
         fu.updateUsesBaseSpell = nil
     end)
+    if updateLesserGhoul and not (spellID == 55090 or spellID == 433895) then
+        fu.auras["次级食尸鬼"].count = 0
+        fu.auras["次级食尸鬼"].expirationTime = nil
+    end
 end
 
 frame:RegisterEvent("SPELL_UPDATE_COOLDOWN") -- 法术冷却更新
@@ -1368,12 +1506,12 @@ end]]
 
 frame:RegisterEvent("SPELL_RANGE_CHECK_UPDATE")
 function frame:SPELL_RANGE_CHECK_UPDATE()
-    updateNameplateCount()
+    -- updateNameplateCount()
 end
 
 frame:RegisterEvent("ACTION_RANGE_CHECK_UPDATE")
 function frame:ACTION_RANGE_CHECK_UPDATE(slot, isInRange, checksRange)
-    updateNameplateCount()
+    -- updateNameplateCount()
 end
 
 frame:RegisterEvent("UI_ERROR_MESSAGE")
@@ -1390,13 +1528,14 @@ end
 
 frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 function frame:NAME_PLATE_UNIT_ADDED(unit)
-    updateNameplateCount()
-    updateTargetCanAttack()
+    addNameplate(unit)
+    updateTargetType()
 end
 
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 function frame:NAME_PLATE_UNIT_REMOVED(unit)
-    updateNameplateCount()
+    nameplate[unit] = nil
+    updateTargetType()
 end
 
 frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
@@ -1469,6 +1608,8 @@ frame:SetScript("OnUpdate", function(_, elapsed)
         updateAura()
         updateAuraBlocks()
         updateTargetRangeBlock()
+        updateEnemyCount()
+        testcurve()
         timeElapsed = 0
     end
 end)

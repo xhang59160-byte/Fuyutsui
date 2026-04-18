@@ -36,9 +36,9 @@ state:
   法术失败:
     step: 12
     type: "int"
-  目标有效:
+  目标类型:
     step: 13
-    type: "bool"
+    type: "int"
   队伍类型:
     step: 14
     type: "int"
@@ -652,6 +652,9 @@ state:
         type: "int"
       光晕:
         step: 42
+        type: "int"
+      虚空齐射:
+        step: 43
         type: "int"
 
 6:
@@ -1290,3 +1293,199 @@ state:
       回春术:
         type: "int"
         step: 7
+
+12:
+  keymap: "demonhunter.yml"
+  1:
+    敌人人数:
+      step: 21
+      type: "int"
+    spells:
+      黑暗:
+        step: 40
+        type: "int"
+      复仇回避:
+        step: 41
+        type: "int"
+      投掷利刃:
+        step: 42
+        type: "int"
+      投掷利刃充能:
+        step: 43
+        type: "int"
+      悲苦咒符:
+        step: 44
+        type: "int"
+      禁锢:
+        step: 45
+        type: "int"
+      献祭光环:
+        step: 46
+        type: "int"
+      混乱新星:
+        step: 47
+        type: "int"
+      恶魔变形:
+        step: 48
+        type: "int"
+      邪能之刃:
+        step: 49
+        type: "int"
+      刃舞:
+        step: 50
+        type: "int"
+      混乱打击:
+        step: 51
+        type: "int"
+      疾影:
+        step: 52
+        type: "int"
+      恶魔追击:
+        step: 53
+        type: "int"
+      眼棱:
+        step: 54
+        type: "int"
+      邪能冲撞:
+        step: 55
+        type: "int"
+      精华破碎:
+        step: 56
+        type: "int"
+  2:
+    敌人人数:
+      step: 21
+      type: "int"
+    spells:
+      黑暗:
+        step: 40
+        type: "int"
+      复仇回避:
+        step: 41
+        type: "int"
+      投掷利刃:
+        step: 42
+        type: "int"
+      投掷利刃充能:
+        step: 43
+        type: "int"
+      悲苦咒符:
+        step: 44
+        type: "int"
+      禁锢:
+        step: 45
+        type: "int"
+      献祭光环:
+        step: 46
+        type: "int"
+      混乱新星:
+        step: 47
+        type: "int"
+      恶魔变形:
+        step: 48
+        type: "int"
+      邪能之刃:
+        step: 49
+        type: "int"
+      地狱火撞击:
+        step: 50
+        type: "int"
+      地狱火撞击充能:
+        step: 51
+        type: "int"
+      恶魔尖刺:
+        step: 52
+        type: "int"
+      烈火烙印:
+        step: 53
+        type: "int"
+      烈火烙印充能:
+        step: 54
+        type: "int"
+      幽魂炸弹:
+        step: 55
+        type: "int"
+      灵魂切削:
+        step: 56
+        type: "int"
+      烈焰咒符:
+        step: 57
+        type: "int"
+      怨念咒符:
+        step: 58
+        type: "int"
+      灵魂裂劈:
+        step: 59
+        type: "int"
+      破裂:
+        step: 60
+        type: "int"
+      破裂充能:
+        step: 61
+        type: "int"
+      邪能毁灭:
+        step: 62
+        type: "int"
+      沉默咒符:
+        step: 63
+        type: "int"
+  3:
+    敌人人数:
+      step: 21
+      type: "int"
+    spells:
+      黑暗:
+        step: 40
+        type: "int"
+      复仇回避:
+        step: 41
+        type: "int"
+      投掷利刃:
+        step: 42
+        type: "int"
+      投掷利刃充能:
+        step: 43
+        type: "int"
+      悲苦咒符:
+        step: 44
+        type: "int"
+      禁锢:
+        step: 45
+        type: "int"
+      献祭光环:
+        step: 46
+        type: "int"
+      虚空新星:
+        step: 47
+        type: "int"
+      虚空变形:
+        step: 48
+        type: "int"
+      虚空之刃:
+        step: 49
+        type: "int"
+      变换:
+        step: 50
+        type: "int"
+      变换充能:
+        step: 51
+        type: "int"
+      收割:
+        step: 52
+        type: "int"
+      吞噬:
+        step: 53
+        type: "int"
+      疾影:
+        step: 54
+        type: "int"
+      虚空射线:
+        step: 55
+        type: "int"
+      恶魔追击:
+        step: 56
+        type: "int"
+      饥渴斩击:
+        step: 57
+        type: "int"
+      

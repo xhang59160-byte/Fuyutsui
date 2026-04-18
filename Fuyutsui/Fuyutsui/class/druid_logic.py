@@ -75,7 +75,7 @@ def run_druid_logic(state_dict, spec_name):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -102,7 +102,7 @@ def run_druid_logic(state_dict, spec_name):
         elif 法术失败 != 0 and 失败法术 is not None:
             current_step = f"施放 {失败法术}"
             action_hotkey = get_hotkey(0, 失败法术)
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if 姿态 != 5:
                 current_step = "施放 熊形态"
                 action_hotkey = get_hotkey(0, "熊形态")
@@ -257,7 +257,7 @@ def run_druid_logic(state_dict, spec_name):
         elif 施法技能 != 20 and 无愈合最低 is not None and 无愈合最低血量 is not None and 无愈合最低血量 < 70:
             current_step = f"施放 愈合 on {无愈合最低}"
             action_hotkey = get_hotkey(int(无愈合最低), "愈合")
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if 一键辅助 == 18:
                 current_step = "施放 斜掠"
                 action_hotkey = get_hotkey(0, "斜掠")

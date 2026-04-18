@@ -60,7 +60,7 @@ def run_hunter_logic(state_dict, spec_name):
     生命值 = state_dict.get("生命值")
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     战斗 = state_dict.get("战斗")
     施法 = state_dict.get("施法")
     引导 = state_dict.get("引导")
@@ -82,7 +82,7 @@ def run_hunter_logic(state_dict, spec_name):
         elif 一键辅助 == 20:
             current_step = "施放 召唤宠物1"
             action_hotkey = get_hotkey(0, "召唤宠物1")
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if tup:
                 current_step = f"施放 {tup[0]}"
                 action_hotkey = get_hotkey(0, tup[1])
@@ -96,7 +96,7 @@ def run_hunter_logic(state_dict, spec_name):
         elif 一键辅助 == 20:
             current_step = "施放 召唤宠物1"
             action_hotkey = get_hotkey(0, "召唤宠物1")
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if tup:
                 current_step = f"施放 {tup[0]}"
                 action_hotkey = get_hotkey(0, tup[1])
@@ -110,7 +110,7 @@ def run_hunter_logic(state_dict, spec_name):
         elif 一键辅助 == 20:
             current_step = "施放 召唤宠物1"
             action_hotkey = get_hotkey(0, "召唤宠物1")
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if tup:
                 current_step = f"施放 {tup[0]}"
                 action_hotkey = get_hotkey(0, tup[1])

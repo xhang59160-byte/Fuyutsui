@@ -64,7 +64,7 @@ def run_warrior_logic(state_dict, spec_name):
     能量值 = state_dict.get("能量值")
     一键辅助 = state_dict.get("一键辅助")
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效")
+    目标类型 = state_dict.get("目标类型")
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -86,7 +86,7 @@ def run_warrior_logic(state_dict, spec_name):
         current_step = "施放 战斗怒吼"
         action_hotkey = get_hotkey(0, "战斗怒吼")
     elif spec_name == "武器": 
-        if 战斗 and 目标有效:
+        if 战斗 and 1 <= 目标类型 <= 3:
             if 生命值 < 70 and spells.get("胜利在望") == 0:
                 current_step = "施放 胜利在望"
                 action_hotkey = get_hotkey(0, "胜利在望")
@@ -96,7 +96,7 @@ def run_warrior_logic(state_dict, spec_name):
         else:
             current_step = "无匹配技能"
     elif spec_name == "狂怒":
-        if 战斗 and 目标有效:
+        if 战斗 and 1 <= 目标类型 <= 3:
             if 生命值 < 70 and spells.get("胜利在望") == 0:
                 current_step = "施放 胜利在望"
                 action_hotkey = get_hotkey(0, "胜利在望")
@@ -108,7 +108,7 @@ def run_warrior_logic(state_dict, spec_name):
     elif spec_name == "防护":
         盾牌格挡 = state_dict.get("盾牌格挡", 0)
 
-        if 战斗 and 目标有效:
+        if 战斗 and 1 <= 目标类型 <= 3:
             if 盾牌格挡 == 0 and spells.get("盾牌格挡") == 0 and 能量值 >= 25:
                 current_step = "施放 盾牌格挡"
                 action_hotkey = get_hotkey(0, "盾牌格挡")

@@ -56,7 +56,7 @@ def run_paladin_logic(state_dict, spec_name):
     能量值 = state_dict.get("能量值", 0)
     一键辅助 = state_dict.get("一键辅助", 0)
     法术失败 = state_dict.get("法术失败", 0)
-    目标有效 = state_dict.get("目标有效", False)
+    目标类型 = state_dict.get("目标类型", False)
     队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
     队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
     首领战 = int(state_dict.get("首领战", 0) or 0)
@@ -137,7 +137,7 @@ def run_paladin_logic(state_dict, spec_name):
             elif 无火最低 is not None and 无火最低血量 is not None and 无火最低血量 < 90:
                 current_step = f"施放 荣耀圣令 on {无火最低}"
                 action_hotkey = get_hotkey(int(无火最低), "荣耀圣令")
-            elif 战斗 and 目标有效 and 0 < 目标距离 <= 5:
+            elif 战斗 and 1 <= 目标类型 <= 3 and 0 < 目标距离 <= 5:
                 current_step = "施放 正义盾击"
                 action_hotkey = get_hotkey(0, "正义盾击")
             elif 最低单位 is not None and 最低生命值 is not None and 最低生命值 < 95:
@@ -183,14 +183,14 @@ def run_paladin_logic(state_dict, spec_name):
             elif 神圣震击 > 0 and 圣光灌注 == 0:
                 current_step = f"施放 圣光闪现 on {最低单位}"
                 action_hotkey = get_hotkey(int(最低单位), "圣光闪现")
-            elif 战斗 and 目标有效:
+            elif 战斗 and 1 <= 目标类型 <= 3:
                 if 审判 <= 1:
                     current_step = "施放 审判"
                     action_hotkey = get_hotkey(0, "审判")
                 elif 神圣震击 == 0 and 圣光灌注 == 0:
                     current_step = "施放 神圣震击"
                     action_hotkey = get_hotkey(0, "神圣震击")
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if 0 < 神圣意志 < 4:
                 current_step = "施放 正义盾击"
                 action_hotkey = get_hotkey(0, "正义盾击")
@@ -207,7 +207,7 @@ def run_paladin_logic(state_dict, spec_name):
         if 法术失败 != 0 and 失败法术 is not None:
             current_step = f"施放 {失败法术}"
             action_hotkey = get_hotkey(0, 失败法术)
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             if state_dict.get("军备类型") == 1 and spells.get("神圣壁垒") == 0 and state_dict.get("神圣壁垒") == 0:
                 current_step = "施放 神圣壁垒"
                 action_hotkey = get_hotkey(0, "神圣壁垒")
@@ -229,7 +229,7 @@ def run_paladin_logic(state_dict, spec_name):
         if 法术失败 != 0 and 失败法术 is not None:
             current_step = f"施放 {失败法术}"
             action_hotkey = get_hotkey(0, 失败法术)
-        elif 战斗 and 目标有效:
+        elif 战斗 and 1 <= 目标类型 <= 3:
             
             tup = action_map.get(一键辅助)
             if tup:
