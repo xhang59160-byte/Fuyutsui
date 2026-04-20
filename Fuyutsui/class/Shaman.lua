@@ -4,8 +4,6 @@ if fu.classId ~= 7 then return end
 fu.HelpfulSpellId = 77472
 fu.HarmfulSpellId = 188196
 
-
-
 fu.spellCooldown = {
     [462854] = { index = 31, name = "天怒" },
     [192106] = { index = 32, name = "闪电之盾" },
@@ -18,7 +16,6 @@ fu.spellCooldown = {
     [192058] = { index = 39, name = "电能图腾" },
 
 }
-
 
 function fu.updateSpecInfo()
     local specIndex = C_SpecializationInfo.GetSpecialization()
@@ -89,8 +86,13 @@ function fu.updateSpecInfo()
                     auraRef = fu.auras["风暴涌流图腾层数"],
                     showKey = "count",
                 },
-                ["生命释放"] = {
+                ["大地生命武器"] = {
                     index = 27,
+                    auraRef = fu.auras["大地生命武器"],
+                    showKey = "remaining",
+                },
+                ["生命释放"] = {
+                    index = 28,
                     auraRef = fu.auras["生命释放"],
                     showKey = "remaining",
                 },
