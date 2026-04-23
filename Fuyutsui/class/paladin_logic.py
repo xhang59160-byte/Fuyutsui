@@ -141,45 +141,7 @@ def run_paladin_logic(state_dict, spec_name):
         盲目之光 = spells.get("盲目之光", -1)
         审判 = spells.get("审判", -1)
         圣洁鸣钟 = spells.get("圣洁鸣钟", -1)
-        神圣棱镜 = spells.get("神圣棱镜", -1)
-        光环掌握 = spells.get("光环掌握", -1)
-        牺牲祝福 = spells.get("牺牲祝福", -1)
-        自由祝福 = spells.get("自由祝福", -1)
-        制裁之锤 = spells.get("制裁之锤", -1)
-        保护祝福 = spells.get("保护祝福", -1)
-        圣疗术 = spells.get("圣疗术", -1)
-
-        dispel_unit_magic, _ = get_unit_with_dispel_type(state_dict, 1)
-        dispel_unit_disease, _ = get_unit_with_dispel_type(state_dict, 3)
-        dispel_unit_poison, _ = get_unit_with_dispel_type(state_dict, 4)
-        最低单位, 最低生命值 = get_lowest_health_unit(state_dict, 100)
-        无火最低, 无火最低血量 = get_lowest_health_unit_without_aura(state_dict, "永恒之火", health_threshold=101)
-        count95 = count_units_below_health(state_dict, 95)
-        count90 = count_units_below_health(state_dict, 90)
-        count80 = count_units_below_health(state_dict, 80)
-
-        圣光限值 = int(40 + (能量值 * 0.3)) # 40-70
-
-        unit_info = {
-            "最低单位": 最低单位,
-            "最低生命值": 最低生命值,
-            "无火最低": 无火最低,
-            "无火最低血量": 无火最低血量,
-            "count95": count95,
-            "count90": count90,
-        }
-
-        驱散单位 = None
-        if dispel_unit_magic is not None:
-            if 队伍类型 == 46 and 首领战 not in no_dispel_bosses:
-                驱散单位 = dispel_unit_magic
-            elif 队伍类型 <= 40 and 首领战 in need_dispel_bosses:
-                驱散单位 = dispel_unit_magic
-        if 驱散单位 is None:
-            驱散单位 = dispel_unit_disease
-        if 驱散单位 is None:
-            驱散单位 = dispel_unit_poison
-        
+        神圣棱镜 = spells.get("神圣棱�        # --- 优先级逻辑开始 ---
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
         elif 法术失败 != 0 and 失败法术 is not None:
