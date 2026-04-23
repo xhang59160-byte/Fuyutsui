@@ -1,9 +1,6 @@
 local _, fu = ...
 if fu.classId ~= 2 then return end
 
-fu.HelpfulSpellId = 62124
-fu.HarmfulSpellId = 275773
-
 fu.spellCooldown = {
     [115750] = { index = 31, name = "盲目之光" },
     [853] = { index = 32, name = "制裁之锤" },
@@ -144,6 +141,7 @@ function fu.updateSpecInfo()
     elseif specIndex == 3 then
         fu.HarmfulSpellId = 20271
         fu.powerType = "MANA"
+        fu.auras["复仇之怒"].duration = 24
         fu.blocks = {
             ["神圣能量"] = 21,
             ["爆发开关"] = 26,
@@ -165,6 +163,7 @@ function fu.updateSpecInfo()
                     auraRef = fu.auras["处决宣判"],
                     showKey = "remaining",
                 },
+                -- 427441
                 ["圣光之锤"] = {
                     index = 25,
                     auraRef = fu.auras["圣光之锤"],

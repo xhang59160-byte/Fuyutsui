@@ -560,7 +560,7 @@ fu.auras = {
         name = "复仇之怒",
         spellId = 31884,
         remaining = 0,
-        duration = 0,
+        duration = 15,
         expirationTime = nil,
     },
     ["处决宣判"] = {
@@ -753,8 +753,8 @@ fu.auras = {
         countMax = 2,
         expirationTime = nil,
     },
-    ["风暴涌流图腾层数"] = {
-        name = "风暴涌流图腾层数",
+    ["风暴涌流图腾"] = {
+        name = "风暴涌流图腾",
         spellId = 1267089,
         remaining = 0,
         duration = 60,
@@ -771,6 +771,13 @@ fu.auras = {
         count = 0,
         countMin = 0,
         countMax = 2,
+        expirationTime = nil,
+    },
+    ["升腾"] = {
+        name = "升腾",
+        spellId = 114052,
+        remaining = 0,
+        duration = 6,
         expirationTime = nil,
     },
 }
@@ -836,8 +843,9 @@ fu.updateAuras = {
         -- 萨满祭司
         [453406] = { { name = "飞旋之土" } },
         [53390] = { { name = "潮汐奔涌", step = 1 } },
-        [1267089] = { { name = "风暴涌流图腾层数", step = 1 } },
+        [1267089] = { { name = "风暴涌流图腾", step = 1 } },
         [73685] = { { name = "生命释放", step = 2 } },
+        [114052] = { { name = "升腾",  } },
     },
     -- COOLDOWN_VIEWER_SPELL_OVERRIDE_UPDATED
     -- 法术覆盖事件, 检测参数: 基本法术ID, 覆盖法术ID
@@ -954,7 +962,7 @@ fu.updateAuras = {
             { name = "生命释放", auraID = 73685, step = -1 },
         },
         -- 风暴涌流图腾
-        [1267068] = { { name = "风暴涌流图腾层数", auraID = 1267089, step = -1 } },
+        [1267068] = { { name = "风暴涌流图腾", auraID = 1267089, step = -1 } },
 
     },
     -- 法术图标事件"SPELL_UPDATE_ICON",
@@ -1000,7 +1008,7 @@ fu.updateAuras = {
             overrideSpellID = 1262763
         },
         [5394] = {
-            name = "风暴涌流图腾层数",
+            name = "风暴涌流图腾",
             auraID = 1267089,
             spellId = 5394,
             overrideSpellID = 1267068
@@ -1215,7 +1223,7 @@ fu.noSecretAuras = {
     [450769] = true,  -- Aspect of Harmony 和谐化身
     -- 恢复 萨满
     [974] = true,
-    [383648] = true,  -- Earth Shield
+    [383648] = true,  -- Earth Shield 大地之盾
     [61295] = true,   -- Riptide
     -- 神圣 圣骑士
     [53563] = true,   -- Beacon of Light, 圣光道标

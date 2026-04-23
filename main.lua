@@ -1,11 +1,12 @@
 local _, fu = ...
-
+local isSec = issecretvalue
 local GetSpellCooldownDuration = C_Spell.GetSpellCooldownDuration
 local GetSpellChargeDuration = C_Spell.GetSpellChargeDuration
 local GetSpellCooldown = C_Spell.GetSpellCooldown
 local GetOverrideSpell = C_Spell.GetOverrideSpell
 local IsSpellInRange = C_Spell.IsSpellInRange
 local IsSpellKnown = C_SpellBook.IsSpellKnown
+local IsSpellInSpellBook = C_SpellBook.IsSpellInSpellBook
 local EvaluateColorFromBoolean = C_CurveUtil.EvaluateColorFromBoolean
 local GetBuffDataByIndex = C_UnitAuras.GetBuffDataByIndex
 local rc = LibStub("LibRangeCheck-3.0")
@@ -143,7 +144,7 @@ local function getPlayerInfo()
     state.powerType = fu.powerType or nil -- 更新能量类型
     group_blocks = fu.group_blocks        -- 更新队伍块
     blocks = fu.blocks                    -- 更新色块
-
+    print(fu.classId)
     -- 创建固定色块
     creat(fixed["锚点"], 0)
     creat(fixed["职业"], fu.classId / 255)
@@ -181,8 +182,9 @@ local function updateCooldownSpellKnown()
     if fu.spellCooldown then
         for spellID, info in pairs(fu.spellCooldown) do
             local isKnown = IsSpellKnown(spellID)
+            local isInBook = IsSpellInSpellBook(spellID)
             local index = info.index
-            if isKnown or info.forcedKnown then
+            if isKnown or isInBook or info.forcedKnown then
                 -- print("加入法术:", info.name, index)
                 spells[spellID] = info
             else
@@ -215,7 +217,7 @@ local function updateSpellKnown()
     if fu.heroSpell then
         local index = 0
         for spellID, info in pairs(fu.heroSpell) do
-            if IsSpellKnown(spellID) then
+            if IsSpellKnown(spellID) or IsSpellInSpellBook(spellID) then
                 index = info
             end
         end
@@ -398,8 +400,6 @@ local function updatePlayerStagger()
         creat(blocks["酒池"], staggerPercent / 255)
     end
 end
-
-
 
 ---@param spellID number 光环ID,
 -- 通过事件 "SPELL_UPDATE_COOLDOWN"获取光环,
@@ -1017,7 +1017,7 @@ local function getMaxAuraByTable(unit, spellIds)
     local maxAura = nil
     for i, spellId in pairs(spellIds) do
         for auraInstanceID, aura in pairs(obj.aura) do
-            if issecretvalue(aura.spellId) then
+            if isSec(aura.spellId) then
                 obj.aura[auraInstanceID] = nil
             else
                 if aura.spellId == spellId and aura.expirationTime and (not maxAura or aura.expirationTime > maxAura.expirationTime) then
@@ -1291,7 +1291,7 @@ end
 
 frame:RegisterEvent("UNIT_SPELLCAST_SENT")
 function frame:UNIT_SPELLCAST_SENT(player, targetName, castGUID, spellID)
-    if not issecretvalue(targetName) then
+    if not isSec(targetName) then
         for unit, data in pairs(group) do
             if data.name == targetName then
                 state.castTargetUnit = unit
@@ -1344,7 +1344,7 @@ end
 local updateLesserGhoul = false
 frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 function frame:UNIT_SPELLCAST_SUCCEEDED(unitTarget, castGUID, spellID, castBarID)
-    if not issecretvalue(spellID) then
+    if not isSec(spellID) then
         updateAuraBySuccess(spellID, castBarID)
         updateFailedSpellBySuccess(spellID)
         -- print(spellID)
@@ -1372,7 +1372,7 @@ end
 
 frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
 function frame:UNIT_SPELLCAST_FAILED(unitTarget, castGUID, spellID, castBarID)
-    if not issecretvalue(spellID) then
+    if not isSec(spellID) then
         updateTeaCountFailed(spellID)
         updateSpellFailed(spellID)
     end
@@ -1517,7 +1517,7 @@ end
 
 frame:RegisterEvent("UNIT_DIED")
 function frame:UNIT_DIED(unitGUID)
-    if not issecretvalue(unitGUID) then
+    if not isSec(unitGUID) then
         updateUnitDeath(unitGUID)
     end
 end
@@ -1593,7 +1593,7 @@ function frame:UNIT_AURA(unit, info)
     end
     if info.addedAuras then
         for k, v in pairs(info.addedAuras) do
-            if not issecretvalue(v.spellId) and v.sourceUnit == "player" then
+            if not isSec(v.spellId) and v.sourceUnit == "player" then
                 -- print("|cnGREEN_FONT_COLOR:新增光环: |r", v.auraInstanceID, v.spellId, v.name)
                 obj.aura[v.auraInstanceID] = v
             end
@@ -1602,7 +1602,7 @@ function frame:UNIT_AURA(unit, info)
     if info.updatedAuraInstanceIDs then
         for _, v in pairs(info.updatedAuraInstanceIDs) do
             local aura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, v)
-            if aura and not issecretvalue(aura.spellId) and aura.sourceUnit == "player" then
+            if aura and not isSec(aura.spellId) and aura.sourceUnit == "player" then
                 -- print("|cnYELLOW_FONT_COLOR:更新光环: |r", aura.auraInstanceID, aura.spellId, aura.name)
                 obj.aura[aura.auraInstanceID] = aura
             end

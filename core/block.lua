@@ -98,7 +98,7 @@ function fu.CreateAutoLayoutBar(minValue, maxValue, spellId, events)
 
     -- 1. 创建进度条主体
     local bar = CreateFrame("StatusBar", nil, countBars)
-    bar:SetSize(barWidth, BAR_CONFIG.height)
+    bar:SetSize(barWidth + 1, BAR_CONFIG.height) -- +1 确保满格时能完全覆盖
     bar:SetPoint("TOPLEFT", countBars, "TOPLEFT", (startIndex - 1) * BAR_CONFIG.width, 0)
     bar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
     bar:GetStatusBarTexture():SetDrawLayer("ARTWORK")

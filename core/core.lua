@@ -112,10 +112,26 @@ function SetTestSecret(set)
     SetCVar("secretAuraDataRestrictionsForced", set)
     SetCVar("scriptErrors", set);
     SetCVar("doNotFlashLowHealthWarning", set);
+    print("|cff00ff00[Fuyutsui]|r 已设置测试模式: " .. (set == 1 and "|cff00ff00开启|r" or "|cffff0000关闭|r"))
 end
 
 -- /script SetTestSecret(0)
 SetTestSecret(1)
+
+function FuGetAuraDate(unit)
+    for i = 1, 40 do
+        local aura = C_UnitAuras.GetAuraDataByIndex(unit, i)
+        if aura then
+            for key, value in pairs(aura) do
+                if key == "name" then
+                    print(value, issecretvalue(key), issecretvalue(value))
+                end
+            end
+        end
+    end
+end
+
+-- /script FuGetAuraDate("player", id)
 
 ---@param reversed boolean 是否逆序
 ---@param forceParty boolean 是否强制使用队伍
