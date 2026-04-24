@@ -268,6 +268,8 @@ def run_shaman_logic(state_dict, spec_name):
                 elif 无盾治疗 is not None:
                     current_step = f"施放 大地之盾 on {无盾治疗}, 无盾治疗单位"
                     action_hotkey = get_hotkey(int(无盾治疗), "大地之盾")
+                else:
+                    current_step = "无匹配技能"
             elif 队伍类型 <= 40:  # 团队
                 if 净化灵魂 == 0 and 驱散单位 is not None:
                     current_step = f"施放 净化灵魂 on {驱散单位}"
@@ -302,5 +304,7 @@ def run_shaman_logic(state_dict, spec_name):
                 elif lowest_u is not None and lowest_p is not None and lowest_p  < 治疗限值 - 15 and 群疗限值数量 <= 2:
                     current_step = f"施放 治疗波 on {lowest_u}, 释放治疗波"
                     action_hotkey = get_hotkey(int(lowest_u), "治疗波")
-
+                else:
+                    current_step = "无匹配技能"
+                
     return action_hotkey, current_step, unit_info
