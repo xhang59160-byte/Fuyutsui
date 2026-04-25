@@ -252,12 +252,12 @@ def run_paladin_logic(state_dict, spec_name):
             current_step = "群奶攒豆: 圣洁鸣钟"
             action_hotkey = get_hotkey(0, "圣洁鸣钟")
         elif 战斗 and 1 <= 目标类型 <= 3:
-            if 神圣震击 == 0:
-                current_step = "进攻攒豆: 神圣震击"
-                action_hotkey = get_hotkey(0, "神圣震击")
-            elif 审判 <= 1:
+            if 审判 <= 1:
                 current_step = "进攻攒豆: 审判"
                 action_hotkey = get_hotkey(0, "审判")
+            elif 神圣震击 == 0:
+                current_step = "进攻攒豆: 神圣震击"
+                action_hotkey = get_hotkey(0, "神圣震击")
         elif 最低生命值 is not None and 最低生命值 <= 95:
             if 神圣能量 >= 3 and 无火最低 is not None and 无火最低血量 <= 80:
                 current_step = f"填充火: 荣耀圣令 on {无火最低}"
