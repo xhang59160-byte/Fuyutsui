@@ -45,7 +45,7 @@ def _get_failed_spell(state_dict):
         return spell_name
     return None
 
-def _get_ret_helper_finisher(one_key_value, finisher_mode=0):
+def _get_ret_helper_finisher(one_key_value, finisher_mode=0, enemies=0):
     """
     返回惩戒终结技对应的 (显示名, 实际按键技能名)。
     finisher_mode: 0=自动(跟随一键辅助), 1=强制单体
@@ -53,8 +53,8 @@ def _get_ret_helper_finisher(one_key_value, finisher_mode=0):
     自动模式 (0):
     - 推荐最终审判 -> 打最终审判
     - 推荐神圣风暴 -> 打神圣风暴
-    - 推荐圣光之锤 -> 打神圣风暴
-    - 推荐处决宣判 -> 打神圣风暴
+    - 推荐圣光之锤 -> 只有1个或0个敌人时打最终审判，否则打神圣风暴
+    - 推荐处决宣判 -> 只有1个或0个敌人时打最终审判，否则打神圣风暴
     单体模式 (1):
     - 推荐最终审判 -> 打最终审判
     - 推荐神圣风暴 -> 打最终审判
@@ -70,9 +70,13 @@ def _get_ret_helper_finisher(one_key_value, finisher_mode=0):
     if one_key_value == 18:
         if finisher_mode == 1:
             return ("圣光之锤", "最终审判")
+        elif finisher_mode == 0 and enemies <= 1:
+            return ("圣光之锤", "最终审判")
         return ("圣光之锤", "神圣风暴")
     if one_key_value == 20:
         if finisher_mode == 1:
+            return ("处决宣判", "最终审判")
+        elif finisher_mode == 0 and enemies <= 1:
             return ("处决宣判", "最终审判")
         return ("处决宣判", "神圣风暴")
     return None
@@ -301,12 +305,13 @@ def run_paladin_logic(state_dict, spec_name):
         AOE开关 = int(state_dict.get("AOE开关", 0) or 0)
         输出模式 = int(state_dict.get("输出模式", 0) or 0)
         神圣能量 = int(state_dict.get("神圣能量", 0) or 0)
+        敌人人数 = int(state_dict.get("敌人人数", 0) or 0)
 
         公正之剑 = spells.get("公正之剑", 99)
         审判 = spells.get("审判", 99)
         荣耀圣令 = spells.get("荣耀圣令", 99)
 
-        helper_finisher = _get_ret_helper_finisher(一键辅助, AOE开关)
+        helper_finisher = _get_ret_helper_finisher(一键辅助, AOE开关, 敌人人数)
 
         unit_info["神圣能量"] = 神圣能量
         unit_info["一键辅助"] = 一键辅助
