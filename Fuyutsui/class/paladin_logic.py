@@ -277,7 +277,7 @@ def run_paladin_logic(state_dict, spec_name):
 
         elif 英雄天赋 == 2:
             # ======== 【烈日先驱】 ========
-            if 队伍类型 <= 40:
+            if 1 <= 队伍类型 <= 40:
                 # -------- 团本逻辑 --------
                 if 引导 > 0:
                     current_step = "在引导,不执行任何操作"
@@ -337,8 +337,8 @@ def run_paladin_logic(state_dict, spec_name):
                 else:
                     current_step = "无匹配技能"
 
-            elif 队伍类型 == 46:
-                # -------- 5人队伍逻辑 --------
+            elif 队伍类型 == 46 or 队伍类型 == 0:
+                # -------- 5人队伍 / 单人逻辑 --------
                 if 引导 > 0:
                     current_step = "在引导,不执行任何操作"
                 elif 法术失败 != 0 and 失败法术 is not None:
