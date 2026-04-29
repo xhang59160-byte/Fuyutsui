@@ -398,10 +398,7 @@ def run_paladin_logic(state_dict, spec_name):
                 elif 神圣能量 >= 3 or 神圣意志 > 0:
                     if 最低单位 is not None and 最低生命值 < 80:
                         current_step = f"3豆/意志单抬: 荣耀圣令 on {最低单位}"
-                        action_hotkey = get_hotkey(int(最低单位), "荣耀圣令")
-                    elif 最低单位 is not None and 最低生命值 < 90:
-                        current_step = f"3豆兜底抬血: 荣耀圣令 on {最低单位}"
-                        action_hotkey = get_hotkey(int(最低单位), "荣耀圣令")
+                        action_hotkey = get_hotkey(int(最低单位), "荣耀圣令")                   
                     elif 0 < 神圣意志 < 4:
                         current_step = "意志过期兜底: 荣耀圣令 on 玩家"
                         action_hotkey = get_hotkey(1, "荣耀圣令")
