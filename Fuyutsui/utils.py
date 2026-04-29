@@ -283,36 +283,6 @@ def _has_any_aura(data, aura_names):
     return False
 
 
-def get_unit_with_shortest_aura_duration(state_dict, aura_name):
-    """
-    获取指定光环剩余时间最短的有效单位。
-    没有该光环的单位按 0 秒处理，会优先被选中。
-    """
-    group = state_dict.get("group") or {}
-    best_unit, best_duration = None, None
-    for key, data in group.items():
-        if not isinstance(data, dict):
-            continue
-        if not _role_not_zero(data):
-            continue
-        pct = data.get("生命值")
-        if pct is None:
-            continue
-        try:
-            pct = int(pct)
-        except (TypeError, ValueError):
-            continue
-        if pct <= 0:
-            continue
-        try:
-            duration = int(data.get(aura_name, 0) or 0)
-        except (TypeError, ValueError):
-            duration = 0
-        if best_duration is None or duration < best_duration:
-            best_unit, best_duration = str(key), duration
-    return (best_unit, best_duration) if best_unit is not None else (None, None)
-
-
 def get_lowest_health_unit_with_any_aura(state_dict, *aura_names, health_threshold=100):
     """
     获取拥有 aura_names 中任意一个光环、且生命值低于 health_threshold 的单位中，生命值最低者。

@@ -102,7 +102,6 @@ def _priest_discipline_logic(state_dict):
     无救赎最低, 无救赎生命值 = get_lowest_health_unit_without_aura(state_dict, "救赎", 100)
     无盾最低, 无盾生命值 = get_lowest_health_unit_without_aura(state_dict, "真言术：盾", 101)
     无盾坦克, 无盾坦克生命值 = get_unit_with_role_and_without_aura_name(state_dict, 1, "真言术：盾")
-    最短盾单位, 最短盾时间 = get_unit_with_shortest_aura_duration(state_dict, "真言术：盾")
     无救赎90数量 = count_units_without_aura_below_health(state_dict, "救赎", 90)
     有救赎数量 = count_units_with_aura(state_dict, "救赎")
 
@@ -126,8 +125,6 @@ def _priest_discipline_logic(state_dict):
         "无盾生命值": 无盾生命值,
         "无盾坦克": 无盾坦克,
         "无盾坦克生命值": 无盾坦克生命值,    
-        "最短盾单位": 最短盾单位,
-        "最短盾时间": 最短盾时间,
     }
 
     if 引导 > 0:
@@ -217,9 +214,6 @@ def _priest_discipline_logic(state_dict):
             elif 暗影愈合 > 0 and 暗影层数 > 0 and 施法技能 != 34 and 最低单位 is not None and 最低生命值 is not None and 最低生命值 < 暗影愈合阈值:
                 current_step = f"施放 暗影愈合 on {最低单位}, 暗影愈合"
                 action_hotkey = get_hotkey(int(最低单位), "快速治疗")
-            elif 虚空之盾 > 0 and 盾 == 0 and 最短盾单位 is not None:
-                current_step = f"施放 真言术：盾 on {最短盾单位}, 虚空之盾刷新最短盾"
-                action_hotkey = get_hotkey(int(最短盾单位), "真言术：盾")
             elif 盾 == 0 and 无救赎最低 and 无救赎生命值 is not None:
                 current_step = f"施放 真言术：盾 on {无救赎最低}, 无救赎单位"
                 action_hotkey = get_hotkey(int(无救赎最低), "真言术：盾")
