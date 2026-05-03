@@ -566,6 +566,7 @@ def run_paladin_logic(state_dict, spec_name):
         unit_info["神圣能量"] = 神圣能量
         unit_info["一键辅助"] = 一键辅助
         unit_info["AOE开关"] = AOE开关
+        unit_info["敌人人数"] = 敌人人数
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
         elif 法术失败 != 0 and 失败法术 is not None:
@@ -573,7 +574,11 @@ def run_paladin_logic(state_dict, spec_name):
             action_hotkey = get_hotkey(0, 失败法术)
         elif 战斗 and 1 <= 目标类型 <= 3:
             if 输出模式 == 0:
-                if tup:
+                if helper_finisher:
+                    shown_name, cast_name = helper_finisher
+                    current_step = f"施放 {shown_name}"
+                    action_hotkey = get_hotkey(0, cast_name)
+                elif tup:
                     current_step = f"施放 {tup[0]}"
                     action_hotkey = get_hotkey(0, tup[1])
                 else:

@@ -17,7 +17,7 @@ local _, fu = ...
 
 local aoeMode = 0
 local cooldowns = 0
-local dpsMode = 0
+local dpsMode = 1
 
 local function switchCooldown()
     if cooldowns == 0 then
