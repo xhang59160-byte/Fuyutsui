@@ -164,6 +164,7 @@ def run_paladin_logic(state_dict, spec_name):
         count95 = count_units_below_health(state_dict, 95)
         count90 = count_units_below_health(state_dict, 90)
         count80 = count_units_below_health(state_dict, 80)
+        坦克单位 = get_unit_with_role(state_dict, 1)
 
         圣光限值 = int(40 + (能量值 * 0.3)) # 40-70
 
@@ -362,7 +363,7 @@ def run_paladin_logic(state_dict, spec_name):
                     current_step = f"低血站桩: 圣光术 on {最低单位}"
                     action_hotkey = get_hotkey(int(最低单位), "圣光术")
                 elif 神圣能量 == 5:
-                    if count90 >= 3 and 最低生命值 is not None and 最低生命值 > 60:
+                    if count90 >= 3 and 最低生命值 is not None and 最低生命值 > (40 if 最低单位 == 坦克单位 else 60):
                         current_step = "5豆群抬: 黎明之光"
                         action_hotkey = get_hotkey(0, "黎明之光")
                     elif 最低单位 is not None and 最低生命值 < 80:
@@ -382,7 +383,7 @@ def run_paladin_logic(state_dict, spec_name):
                     current_step = f"灌注闪现: 圣光闪现 on {最低单位}"
                     action_hotkey = get_hotkey(int(最低单位), "圣光闪现")
                     
-                elif (神圣能量 >= 3 or 神圣意志 > 0) and count90 >= 3 and 最低生命值 is not None and 最低生命值 > 60:
+                elif (神圣能量 >= 3 or 神圣意志 > 0) and count90 >= 3 and 最低生命值 is not None and 最低生命值 > (40 if 最低单位 == 坦克单位 else 60):
                     current_step = "3豆/意志群抬优先: 黎明之光"
                     action_hotkey = get_hotkey(0, "黎明之光")
 
