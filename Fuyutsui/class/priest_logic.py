@@ -204,7 +204,9 @@ def _priest_discipline_logic(state_dict):
             elif 无救赎90数量 >= 2 and 福音 == 0:
                 current_step = "施放 福音"
                 action_hotkey = get_hotkey(0, "福音")
-            
+            elif 灭 == 0 and 1 <= 目标类型 <= 3 and 战斗 and 目标生命值 < 20:
+                current_step = "施放 暗言术：灭"
+                action_hotkey = get_hotkey(0, "暗言术：灭")
             elif 圣光涌动 > 0 and 涌动层数 > 0 and 无救赎最低 is not None and 无救赎生命值 is not None and 无救赎生命值 < 90:
                 current_step = f"施放 快速治疗 on {无救赎最低}, 无救赎生命低于90%的单位"
                 action_hotkey = get_hotkey(int(无救赎最低), "快速治疗")
@@ -229,9 +231,10 @@ def _priest_discipline_logic(state_dict):
             elif 苦修 == 0 and 最低单位 is not None and 最低生命值 is not None and 最低生命值 < 85:
                 current_step = f"施放 苦修 on {最低单位}, 生命最低的单位"
                 action_hotkey = get_hotkey(int(最低单位), "苦修")
-            elif 灭 == 0 and 1 <= 目标类型 <= 3 and 战斗 and 目标生命值 < 20:
-                current_step = "施放 暗言术：灭"
-                action_hotkey = get_hotkey(0, "暗言术：灭")
+            elif 最低单位 is not None and 最低生命值 is not None and 最低生命值 < 70:
+                current_step = f"施放 快速治疗 on {最低单位}, 生命最低的单位"
+                action_hotkey = get_hotkey(int(最低单位), "快速治疗")
+
             elif 1 <= 目标类型 <= 3 and 战斗:
                 if not 移动 and 心灵震爆 == 0 and 有救赎数量 > 0:
                     current_step = "施放 心灵震爆"
